@@ -1,0 +1,384 @@
+{
+  "title": "Ocean Cube — Live Weather",
+  "description": "An ocean inside a glass cube that reacts to the real weather of your city: sun, clouds, rain, wind, storms, fog, snow, day and night. Move the mouse over the water to make ripples.",
+  "type": "web",
+  "file": "index.html",
+  "preview": "preview.jpg",
+  "tags": [
+    "Nature",
+    "Relaxing"
+  ],
+  "contentrating": "Everyone",
+  "general": {
+    "localization": {
+      "en-us": {
+        "ui_language": "Language",
+        "ui_auto": "Automatic",
+        "ui_city": "City (or \"lat,lon\")",
+        "ui_units": "Units",
+        "ui_metric": "Metric (°C, km/h)",
+        "ui_imperial": "Imperial (°F, mph)",
+        "ui_quality": "Quality",
+        "ui_low": "Low",
+        "ui_medium": "Medium",
+        "ui_high": "High",
+        "ui_ultra": "Ultra",
+        "ui_fpslimit": "FPS limit (0 = Wallpaper Engine setting)",
+        "ui_weatheroverride": "Weather (test mode)",
+        "ui_live": "Live weather",
+        "ui_clear": "Clear sky",
+        "ui_partly": "Partly cloudy",
+        "ui_cloudy": "Overcast",
+        "ui_fog": "Fog",
+        "ui_drizzle": "Drizzle",
+        "ui_rain": "Rain",
+        "ui_heavyrain": "Heavy rain",
+        "ui_storm": "Thunderstorm",
+        "ui_snow": "Snow",
+        "ui_windy": "Windy",
+        "ui_timeoverride": "Time of day (test mode)",
+        "ui_realtime": "Real sunrise/sunset",
+        "ui_dawn": "Dawn",
+        "ui_day": "Day",
+        "ui_dusk": "Dusk",
+        "ui_night": "Night",
+        "ui_showhud": "Show weather panel",
+        "ui_hudposition": "Panel position",
+        "ui_topleft": "Top left",
+        "ui_topright": "Top right",
+        "ui_bottomleft": "Bottom left",
+        "ui_bottomright": "Bottom right",
+        "ui_fishcount": "Fish",
+        "ui_mouseripples": "Mouse makes ripples",
+        "ui_parallax": "Mouse parallax",
+        "ui_cubescale": "Cube size (%)",
+        "ui_refreshminutes": "Weather update (minutes)"
+      },
+      "pt-br": {
+        "ui_language": "Idioma",
+        "ui_auto": "Automático",
+        "ui_city": "Cidade (ou \"lat,lon\")",
+        "ui_units": "Unidades",
+        "ui_metric": "Métrico (°C, km/h)",
+        "ui_imperial": "Imperial (°F, mph)",
+        "ui_quality": "Qualidade",
+        "ui_low": "Baixa",
+        "ui_medium": "Média",
+        "ui_high": "Alta",
+        "ui_ultra": "Ultra",
+        "ui_fpslimit": "Limite de FPS (0 = configuração do Wallpaper Engine)",
+        "ui_weatheroverride": "Clima (modo de teste)",
+        "ui_live": "Clima real",
+        "ui_clear": "Céu limpo",
+        "ui_partly": "Parcialmente nublado",
+        "ui_cloudy": "Nublado",
+        "ui_fog": "Neblina",
+        "ui_drizzle": "Garoa",
+        "ui_rain": "Chuva",
+        "ui_heavyrain": "Chuva forte",
+        "ui_storm": "Tempestade",
+        "ui_snow": "Neve",
+        "ui_windy": "Ventania",
+        "ui_timeoverride": "Hora do dia (modo de teste)",
+        "ui_realtime": "Nascer/pôr do sol real",
+        "ui_dawn": "Amanhecer",
+        "ui_day": "Dia",
+        "ui_dusk": "Entardecer",
+        "ui_night": "Noite",
+        "ui_showhud": "Mostrar painel do clima",
+        "ui_hudposition": "Posição do painel",
+        "ui_topleft": "Superior esquerdo",
+        "ui_topright": "Superior direito",
+        "ui_bottomleft": "Inferior esquerdo",
+        "ui_bottomright": "Inferior direito",
+        "ui_fishcount": "Peixes",
+        "ui_mouseripples": "Mouse cria ondulações",
+        "ui_parallax": "Paralaxe do mouse",
+        "ui_cubescale": "Tamanho do cubo (%)",
+        "ui_refreshminutes": "Atualização do clima (minutos)"
+      },
+      "es-es": {
+        "ui_language": "Idioma",
+        "ui_auto": "Automático",
+        "ui_city": "Ciudad (o \"lat,lon\")",
+        "ui_units": "Unidades",
+        "ui_metric": "Métrico (°C, km/h)",
+        "ui_imperial": "Imperial (°F, mph)",
+        "ui_quality": "Calidad",
+        "ui_low": "Baja",
+        "ui_medium": "Media",
+        "ui_high": "Alta",
+        "ui_ultra": "Ultra",
+        "ui_fpslimit": "Límite de FPS (0 = ajuste de Wallpaper Engine)",
+        "ui_weatheroverride": "Clima (modo de prueba)",
+        "ui_live": "Clima real",
+        "ui_clear": "Despejado",
+        "ui_partly": "Parcialmente nublado",
+        "ui_cloudy": "Nublado",
+        "ui_fog": "Niebla",
+        "ui_drizzle": "Llovizna",
+        "ui_rain": "Lluvia",
+        "ui_heavyrain": "Lluvia intensa",
+        "ui_storm": "Tormenta",
+        "ui_snow": "Nieve",
+        "ui_windy": "Ventoso",
+        "ui_timeoverride": "Hora del día (modo de prueba)",
+        "ui_realtime": "Amanecer/atardecer real",
+        "ui_dawn": "Amanecer",
+        "ui_day": "Día",
+        "ui_dusk": "Atardecer",
+        "ui_night": "Noche",
+        "ui_showhud": "Mostrar panel del clima",
+        "ui_hudposition": "Posición del panel",
+        "ui_topleft": "Arriba a la izquierda",
+        "ui_topright": "Arriba a la derecha",
+        "ui_bottomleft": "Abajo a la izquierda",
+        "ui_bottomright": "Abajo a la derecha",
+        "ui_fishcount": "Peces",
+        "ui_mouseripples": "El ratón crea ondas",
+        "ui_parallax": "Paralaje del ratón",
+        "ui_cubescale": "Tamaño del cubo (%)",
+        "ui_refreshminutes": "Actualización del clima (minutos)"
+      }
+    },
+    "properties": {
+      "uilanguage": {
+        "order": 0,
+        "text": "ui_language",
+        "type": "combo",
+        "value": "auto",
+        "options": [
+          {
+            "label": "ui_auto",
+            "value": "auto"
+          },
+          {
+            "label": "English",
+            "value": "en"
+          },
+          {
+            "label": "Português",
+            "value": "pt"
+          },
+          {
+            "label": "Español",
+            "value": "es"
+          }
+        ]
+      },
+      "city": {
+        "order": 1,
+        "text": "ui_city",
+        "type": "textinput",
+        "value": "São Paulo"
+      },
+      "units": {
+        "order": 2,
+        "text": "ui_units",
+        "type": "combo",
+        "value": "metric",
+        "options": [
+          {
+            "label": "ui_metric",
+            "value": "metric"
+          },
+          {
+            "label": "ui_imperial",
+            "value": "imperial"
+          }
+        ]
+      },
+      "quality": {
+        "order": 3,
+        "text": "ui_quality",
+        "type": "combo",
+        "value": "high",
+        "options": [
+          {
+            "label": "ui_low",
+            "value": "low"
+          },
+          {
+            "label": "ui_medium",
+            "value": "medium"
+          },
+          {
+            "label": "ui_high",
+            "value": "high"
+          },
+          {
+            "label": "ui_ultra",
+            "value": "ultra"
+          }
+        ]
+      },
+      "fpslimit": {
+        "order": 4,
+        "text": "ui_fpslimit",
+        "type": "slider",
+        "value": 60,
+        "min": 0,
+        "max": 240,
+        "step": 1,
+        "fraction": false
+      },
+      "weatheroverride": {
+        "order": 5,
+        "text": "ui_weatheroverride",
+        "type": "combo",
+        "value": "auto",
+        "options": [
+          {
+            "label": "ui_live",
+            "value": "auto"
+          },
+          {
+            "label": "ui_clear",
+            "value": "clear"
+          },
+          {
+            "label": "ui_partly",
+            "value": "partly"
+          },
+          {
+            "label": "ui_cloudy",
+            "value": "cloudy"
+          },
+          {
+            "label": "ui_fog",
+            "value": "fog"
+          },
+          {
+            "label": "ui_drizzle",
+            "value": "drizzle"
+          },
+          {
+            "label": "ui_rain",
+            "value": "rain"
+          },
+          {
+            "label": "ui_heavyrain",
+            "value": "heavyRain"
+          },
+          {
+            "label": "ui_storm",
+            "value": "storm"
+          },
+          {
+            "label": "ui_snow",
+            "value": "snow"
+          },
+          {
+            "label": "ui_windy",
+            "value": "windy"
+          }
+        ]
+      },
+      "timeoverride": {
+        "order": 6,
+        "text": "ui_timeoverride",
+        "type": "combo",
+        "value": "auto",
+        "options": [
+          {
+            "label": "ui_realtime",
+            "value": "auto"
+          },
+          {
+            "label": "ui_dawn",
+            "value": "dawn"
+          },
+          {
+            "label": "ui_day",
+            "value": "day"
+          },
+          {
+            "label": "ui_dusk",
+            "value": "dusk"
+          },
+          {
+            "label": "ui_night",
+            "value": "night"
+          }
+        ]
+      },
+      "showhud": {
+        "order": 7,
+        "text": "ui_showhud",
+        "type": "bool",
+        "value": true
+      },
+      "hudposition": {
+        "order": 8,
+        "text": "ui_hudposition",
+        "type": "combo",
+        "value": "topleft",
+        "options": [
+          {
+            "label": "ui_topleft",
+            "value": "topleft"
+          },
+          {
+            "label": "ui_topright",
+            "value": "topright"
+          },
+          {
+            "label": "ui_bottomleft",
+            "value": "bottomleft"
+          },
+          {
+            "label": "ui_bottomright",
+            "value": "bottomright"
+          }
+        ],
+        "condition": "showhud.value == true"
+      },
+      "fishcount": {
+        "order": 9,
+        "text": "ui_fishcount",
+        "type": "slider",
+        "value": 14,
+        "min": 0,
+        "max": 40,
+        "step": 1,
+        "fraction": false
+      },
+      "mouseripples": {
+        "order": 10,
+        "text": "ui_mouseripples",
+        "type": "bool",
+        "value": true
+      },
+      "parallax": {
+        "order": 11,
+        "text": "ui_parallax",
+        "type": "slider",
+        "value": 60,
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "fraction": false
+      },
+      "cubescale": {
+        "order": 12,
+        "text": "ui_cubescale",
+        "type": "slider",
+        "value": 100,
+        "min": 50,
+        "max": 150,
+        "step": 1,
+        "fraction": false
+      },
+      "refreshminutes": {
+        "order": 13,
+        "text": "ui_refreshminutes",
+        "type": "slider",
+        "value": 15,
+        "min": 5,
+        "max": 60,
+        "step": 1,
+        "fraction": false
+      }
+    }
+  }
+}

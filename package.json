@@ -1,0 +1,17 @@
+{
+  "name": "wallpaper-ocean",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ocean in a glass cube that reacts to real-time weather - Wallpaper Engine web wallpaper",
+  "license": "MIT",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs --serve",
+    "preview": "node scripts/preview.mjs",
+    "demo": "node build.mjs && node scripts/build-demo.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.24.0",
+    "three": "0.170.0"
+  }
+}
