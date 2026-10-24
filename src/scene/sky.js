@@ -36,6 +36,43 @@ float fbm(vec2 p) {
   return v;
 }
 
+// Open sea below the horizon, so the cube floats over an endless ocean.
+vec3 openSea(vec3 dir) {
+  float down = -dir.y;
+  vec2 p = dir.xz / max(down, 0.004) * 0.6;
+  float fade = smoothstep(0.0, 0.22, down);
+  float amp = 0.06 + 0.22 * uWind + 0.25 * uStorm;
+  float base = atan(uWindDir.y, uWindDir.x);
+  vec2 g = vec2(0.0);
+  for (int i = 0; i < 5; i++) {
+    float fi = float(i);
+    float ang = base + (fi - 2.0) * 0.55;
+    vec2 d = vec2(cos(ang), sin(ang));
+    float k = 1.3 * pow(1.8, fi);
+    float th = k * dot(d, p) - uTime * sqrt(k) * 0.9 + fi * 2.1;
+    g += amp * 0.5 * cos(th) * d;
+  }
+  g *= fade;
+  vec3 n = normalize(vec3(-g.x, 1.0, -g.y));
+  vec3 r = reflect(dir, n);
+  r.y = abs(r.y);
+  float fres = 0.02 + 0.98 * pow(1.0 - max(dot(n, -dir), 0.0), 5.0);
+  vec3 light = uAmbient * 0.8 + uSunColor * (0.25 + 0.5 * max(uSunDir.y, 0.0));
+  vec3 water = mix(uDeepColor, uShallowColor, 0.22) * light + vec3(0.01, 0.025, 0.07) * uNight;
+  vec3 refl = mix(skyGradient(r), uHorizon * 0.9, uCloud * 0.5);
+  vec3 col = mix(water, refl, fres);
+  float glitter = pow(max(dot(r, uSunDir), 0.0), 500.0) * step(0.0, uSunDir.y) * (1.0 - uCloud * 0.85);
+  col += uSunColor * glitter * 4.0;
+  float moonR = max(dot(r, uMoonDir), 0.0);
+  col += vec3(0.75, 0.82, 1.0) * (pow(moonR, 400.0) * 2.0 + pow(moonR, 30.0) * 0.12) * uNight * (1.0 - uCloud * 0.9);
+  float caps = smoothstep(0.72, 0.95, vnoise(p * 3.0 + uTime * 0.2)) * smoothstep(0.4, 1.0, uWind + uStorm * 0.6) * fade;
+  col = mix(col, light * 0.9, caps * 0.45);
+  col += vec3(0.8, 0.85, 1.0) * uFlash * 0.25 * fres;
+  // Aerial perspective: the far sea melts into the horizon.
+  col = mix(col, uHorizon * 0.8 + uDeepColor * 0.2, smoothstep(0.06, 0.0, down) * 0.75);
+  return col;
+}
+
 void main() {
   vec3 dir = normalize(vDir);
   vec3 col = skyGradient(dir);
@@ -61,15 +98,17 @@ void main() {
   float sunDisc = smoothstep(0.99975, 0.99985, dot(dir, uSunDir));
   col += uSunColor * sunDisc * 2.0 * (1.0 - uCloud * 0.9) * step(-0.02, uSunDir.y);
 
+  if (dir.y < 0.0) col = openSea(dir);
+
   // Cloud layer projected on a plane above the camera.
-  if (dir.y > -0.05) {
+  if (dir.y > 0.0) {
     vec2 uv = dir.xz / (dir.y + 0.12) * 0.9;
     vec2 drift = uWindDir * uCloudTime;
     float n = fbm(uv + drift);
     float n2 = fbm(uv * 2.1 - drift * 1.4 + 3.0);
     float coverage = mix(0.78, 0.25, uCloud);
     float density = smoothstep(coverage, coverage + 0.25 + uCloud * 0.2, n * 0.7 + n2 * 0.3);
-    density *= smoothstep(-0.05, 0.12, dir.y);
+    density *= smoothstep(0.0, 0.12, dir.y);
     float shade = smoothstep(0.2, 0.9, n2);
     vec3 lit = mix(uHorizon, vec3(1.0), 0.55) * (0.6 + 0.4 * max(uSunDir.y + 0.2, 0.0)) + uSunColor * 0.25;
     lit *= 1.0 - uNight * 0.85;
@@ -109,15 +148,17 @@ export class Sky {
       }),
     );
     this.mesh.renderOrder = -10;
+    this.horizonNdc = -0.3;
     this.mesh.frustumCulled = false;
   }
 
   update(dt, camera, env) {
     // Virtual camera: same heading as the real one, tilted up so the horizon sits
-    // at ~12% from the bottom of the screen.
+    // about a third of the way up the screen, with open sea below it.
     const yaw = Math.atan2(camera.position.x, camera.position.z);
-    const pitch = 0.48 - (camera.position.y / camera.position.length() - 0.37) * 0.5;
+    const pitch = 0.22 - (camera.position.y / camera.position.length() - 0.37) * 0.5;
     const tanHalf = Math.tan(THREE.MathUtils.degToRad(35));
+    this.horizonNdc = -Math.tan(pitch) / tanHalf;
     const u = this.uniforms;
     u.uSkyForward.value.set(-Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch), -Math.cos(yaw) * Math.cos(pitch));
     u.uSkyRight.value.set(Math.cos(yaw), 0, -Math.sin(yaw));

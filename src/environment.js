@@ -5,13 +5,13 @@ const WAVE_COUNT = 6;
 
 // Sky/water palette keyed by sun elevation in degrees.
 const PALETTE = [
-  { elev: -20, zenith: '#0a1530', horizon: '#18264c', sun: '#000000', ambient: '#6c84bc', deep: '#072548', shallow: '#155a84' },
-  { elev: -9,  zenith: '#0c1640', horizon: '#2a3466', sun: '#000000', ambient: '#6a7cb4', deep: '#082648', shallow: '#165a80' },
-  { elev: -3,  zenith: '#1f2c63', horizon: '#b0587a', sun: '#ff5a30', ambient: '#7a70a0', deep: '#0a2a50', shallow: '#22607e' },
-  { elev: 2,   zenith: '#35589a', horizon: '#f38a4c', sun: '#ff8a48', ambient: '#9a90a8', deep: '#0a3354', shallow: '#2a7898' },
-  { elev: 9,   zenith: '#3a72c0', horizon: '#f5c38c', sun: '#ffd09a', ambient: '#8f9ab0', deep: '#073150', shallow: '#1a8aa0' },
-  { elev: 25,  zenith: '#2f6fd0', horizon: '#a9d2f0', sun: '#fff2dc', ambient: '#a8c0d8', deep: '#063a5e', shallow: '#18a6b8' },
-  { elev: 60,  zenith: '#2766d2', horizon: '#c2e2f8', sun: '#ffffff', ambient: '#b8d0e6', deep: '#053f66', shallow: '#1ab4c4' },
+  { elev: -20, zenith: '#0a1530', horizon: '#18264c', sun: '#000000', ambient: '#6c84bc', deep: '#05194a', shallow: '#1a4fa6' },
+  { elev: -9,  zenith: '#0c1640', horizon: '#2a3466', sun: '#000000', ambient: '#6a7cb4', deep: '#05194a', shallow: '#1a4fa2' },
+  { elev: -3,  zenith: '#1f2c63', horizon: '#b0587a', sun: '#ff5a30', ambient: '#7a70a0', deep: '#0a2458', shallow: '#2a64ba' },
+  { elev: 2,   zenith: '#35589a', horizon: '#f38a4c', sun: '#ff8a48', ambient: '#9a90a8', deep: '#0a2860', shallow: '#2f6ec6' },
+  { elev: 9,   zenith: '#3a72c0', horizon: '#f5c38c', sun: '#ffd09a', ambient: '#8f9ab0', deep: '#02205a', shallow: '#0f5cc4' },
+  { elev: 25,  zenith: '#2f6fd0', horizon: '#a9d2f0', sun: '#fff2dc', ambient: '#a8c0d8', deep: '#011f5e', shallow: '#0866d8' },
+  { elev: 60,  zenith: '#2766d2', horizon: '#c2e2f8', sun: '#ffffff', ambient: '#b8d0e6', deep: '#01226a', shallow: '#0a6fe6' },
 ].map((k) => ({
   elev: k.elev,
   zenith: new THREE.Color(k.zenith),
@@ -135,7 +135,7 @@ export class Environment {
     const horiz = new THREE.Vector2(-Math.cos(az), -0.75).normalize();
     u.uSunDir.value.set(horiz.x * Math.cos(e), Math.sin(e), horiz.y * Math.cos(e)).normalize();
     // Keep the moon in the visible band of sky above the cube.
-    const moonE = 0.9 + 0.06 * Math.sin(az);
+    const moonE = 0.66 + 0.06 * Math.sin(az);
     u.uMoonDir.value.set(horiz.x * Math.cos(moonE) * 0.9, Math.sin(moonE), horiz.y * Math.cos(moonE)).normalize();
 
     samplePalette(e / DEG, u);
@@ -149,13 +149,14 @@ export class Environment {
     for (const key of ['uZenith', 'uHorizon', 'uAmbient']) {
       u[key].value.lerp(grey, greyAmount * (key === 'uAmbient' ? 0.5 : 1));
     }
-    u.uDeepColor.value.lerp(new THREE.Color('#1c2a36').multiplyScalar(1 - night * 0.8), greyAmount * 0.45);
-    u.uShallowColor.value.lerp(new THREE.Color('#40606c').multiplyScalar(1 - night * 0.8), greyAmount * 0.5);
+    // Clouds dull the water, but it stays a deep ocean blue.
+    u.uDeepColor.value.lerp(new THREE.Color('#0c1a3a').multiplyScalar(1 - night * 0.6), greyAmount * 0.4);
+    u.uShallowColor.value.lerp(new THREE.Color('#2a4f86').multiplyScalar(1 - night * 0.6), greyAmount * 0.45);
     u.uSunColor.value.multiplyScalar(1 - Math.min(0.92, c.cloud * 0.75 + c.storm * 0.4));
     u.uAmbient.value.multiplyScalar(1 - c.storm * 0.35);
     // Never let the cube disappear completely in dark scenes.
     const amb = u.uAmbient.value;
-    amb.setRGB(Math.max(amb.r, 0.26), Math.max(amb.g, 0.29), Math.max(amb.b, 0.36));
+    amb.setRGB(Math.max(amb.r, 0.32), Math.max(amb.g, 0.37), Math.max(amb.b, 0.48));
 
     // Lightning lights up the whole scene for a moment.
     const flash = this.flash;

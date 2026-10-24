@@ -87,6 +87,7 @@ void main() {
   float crest = clamp(h * 7.0 + 0.45, 0.0, 1.0);
   float sunUp = max(uSunDir.y, 0.0);
   vec3 light = uAmbient * 0.85 + uSunColor * (0.3 + 0.55 * sunUp);
+  light = max(light, vec3(0.42, 0.48, 0.62)); // keep the blue readable at dusk and night
   vec3 body = mix(uDeepColor, uShallowColor, 0.35 + 0.55 * crest) * light * 1.15;
   // Light scattering through the thin tops of the waves.
   float scatter = pow(max(dot(V, -uSunDir), 0.0), 4.0) * crest;
@@ -143,12 +144,14 @@ void main() {
   float depth01 = clamp(d / (uLevel - uFloor), 0.0, 1.0);
   float sunUp = max(uSunDir.y, 0.0);
   vec3 light = uAmbient * 0.8 + uSunColor * (0.2 + 0.55 * sunUp);
-  vec3 col = mix(uShallowColor * 1.2, uDeepColor * 0.55, pow(depth01, 0.7)) * light;
+  light = max(light, vec3(0.42, 0.48, 0.62));
+  // Bright blue near the surface sinking into a dark abyss.
+  vec3 col = mix(uShallowColor * 1.25, uDeepColor * 0.4, pow(depth01, 0.9)) * light;
 
   // Shafts of light coming through the surface.
   float along = vWorld.x + vWorld.z;
   float shafts = vnoise(vec2(along * 5.0 + d * 1.5 * uWindDir.x, uTime * 0.25));
-  shafts = pow(shafts, 3.0) * (1.0 - depth01) * (1.0 - uCloud * 0.8) * sunUp;
+  shafts = pow(shafts, 3.0) * (1.0 - depth01 * 0.85) * (1.0 - uCloud * 0.8) * sunUp;
   col += uSunColor * shafts * 0.45;
 
   // Bright line right under the surface.
@@ -163,7 +166,7 @@ void main() {
 
   col += vec3(0.8, 0.85, 1.0) * uFlash * 0.25 * (1.0 - depth01);
   col = mix(col, uFogColor, uFog * 0.3);
-  float alpha = mix(0.38, 0.72, depth01);
+  float alpha = mix(0.4, 0.95, smoothstep(0.0, 0.85, depth01));
   gl_FragColor = vec4(col, alpha);
 }
 `;

@@ -54,7 +54,7 @@ void main() {
   float eye = smoothstep(0.035, 0.02, length(vLocal.xy - vec2(0.36, 0.035)));
   base = mix(base, vec3(0.02), eye);
 
-  float depth = clamp((uLevel - vWorld.y) / 1.1, 0.0, 1.0);
+  float depth = clamp((uLevel - vWorld.y) / 1.45, 0.0, 1.0);
   vec3 light = uAmbient * 0.7 + uSunColor * (0.25 + 0.6 * max(dot(N, uSunDir), 0.0)) * (1.0 - depth * 0.6);
   vec3 col = base * light;
   float rim = pow(1.0 - max(dot(N, V), 0.0), 3.0);
@@ -62,7 +62,7 @@ void main() {
   // At night the fish glow softly.
   col += vColor * (0.25 + rim) * uNight * 0.5 * vGlow;
   col += vec3(0.8, 0.85, 1.0) * uFlash * 0.2;
-  col = mix(col, uDeepColor * light, depth * 0.35);
+  col = mix(col, uDeepColor * light, depth * 0.55);
   gl_FragColor = vec4(col, 1.0);
 }
 `;
@@ -138,7 +138,7 @@ export class Fish {
       this.fish.push({
         pos,
         vel: new THREE.Vector3(Math.cos(angle), 0, Math.sin(angle)).multiplyScalar(0.2),
-        size: 0.17 + Math.random() * 0.11,
+        size: 0.12 + Math.random() * 0.08,
         wanderSeed: Math.random() * 100,
         cruise: 0.14 + Math.random() * 0.1,
         swim: Math.random() * 10,
@@ -151,8 +151,11 @@ export class Fish {
     this.tmp = { steer: new THREE.Vector3(), diff: new THREE.Vector3(), m: new THREE.Matrix4(), f: new THREE.Vector3(), r: new THREE.Vector3(), u: new THREE.Vector3(), s: new THREE.Vector3() };
   }
 
-  /** threat: { x, z } in world space where the mouse touches the water, or null. */
-  update(dt, time, env, threat) {
+  /**
+   * threat: { x, z } in world space where the mouse touches the water, or null.
+   * predators: [{ pos, radius }] (sharks and whales) the fish keep away from.
+   */
+  update(dt, time, env, threat, predators = []) {
     if (!this.count) return;
     const { steer, diff, m, f, r, u, s } = this.tmp;
     const up = new THREE.Vector3(0, 1, 0);
@@ -203,6 +206,18 @@ export class Fish {
           flee = (0.55 - d) / 0.55;
           steer.addScaledVector(diff.normalize(), flee * 3);
           steer.y -= flee * 1.2;
+        }
+      }
+
+      // Keep clear of sharks and whales.
+      for (const p of predators) {
+        diff.subVectors(fish.pos, p.pos);
+        const d = diff.length();
+        const range = p.radius + 0.25;
+        if (d < range && d > 1e-5) {
+          const k = (range - d) / range;
+          steer.addScaledVector(diff, (k * 4) / d);
+          flee = Math.max(flee, k);
         }
       }
 

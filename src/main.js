@@ -10,6 +10,7 @@ import { RippleSim } from './scene/rippleSim.js';
 import { Ocean } from './scene/ocean.js';
 import { Tank } from './scene/tank.js';
 import { Fish } from './scene/fish.js';
+import { MarineLife } from './scene/marine.js';
 import { Sky } from './scene/sky.js';
 import { Precipitation } from './scene/precipitation.js';
 import { Lightning } from './scene/lightning.js';
@@ -42,6 +43,7 @@ const settings = props.values;
 
 let world = null;
 let fish = null;
+let marine = null;
 let quality = QUALITY[settings.quality] || QUALITY.high;
 
 function pixelRatio() {
@@ -73,13 +75,16 @@ function buildWorld() {
   }
 }
 
-function buildFish() {
-  if (fish) {
-    scene.remove(fish.group);
-    fish.dispose();
+function buildLife() {
+  for (const old of [fish, marine]) {
+    if (!old) continue;
+    scene.remove(old.group);
+    old.dispose();
   }
-  fish = new Fish(env, Math.max(0, Math.round(settings.fishcount)));
-  scene.add(fish.group);
+  const count = (v) => Math.max(0, Math.round(v));
+  fish = new Fish(env, count(settings.fishcount));
+  marine = new MarineLife(env, count(settings.whalecount), count(settings.sharkcount));
+  scene.add(fish.group, marine.group);
 }
 
 // Full-screen layer for mist, lightning flashes and a soft vignette over everything.
@@ -176,7 +181,7 @@ function onPropertiesChanged(keys) {
     buildWorld();
     resize();
   }
-  if (has('fishcount')) buildFish();
+  if (has('fishcount', 'whalecount', 'sharkcount')) buildLife();
   if (has('showhud', 'hudposition')) hud.setVisible(settings.showhud, settings.hudposition);
   if (has('weatheroverride', 'units')) applyWeather();
   if (has('timeoverride')) applySolarPhase();
@@ -215,19 +220,47 @@ window.addEventListener('mousemove', onPointerMove);
 window.addEventListener('mousedown', (e) => { onPointerMove(e); pointer.down = true; });
 document.addEventListener('mouseleave', () => { pointer.active = false; lastWater = null; });
 
-// Touch (phones/tablets): tap splashes, dragging draws ripples and steers the camera.
-// Only touches on the scene itself count, so on-page controls keep working.
+// Zoom: mouse wheel or pinch. The camera always stays outside the cube and above
+// the water, so zooming never goes underwater.
+const ZOOM_MIN = 0.6;
+const ZOOM_MAX = 2.4;
+const zoom = { target: 1, value: 1 };
+function zoomBy(factor) {
+  zoom.target = THREE.MathUtils.clamp(zoom.target * factor, ZOOM_MIN, ZOOM_MAX);
+}
+window.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  zoomBy(Math.exp(-e.deltaY * 0.0012));
+}, { passive: false });
+
+// Touch (phones/tablets): tap splashes, dragging draws ripples and steers the camera,
+// two fingers pinch to zoom. Only touches on the scene itself count, so on-page
+// controls keep working.
+let pinchDistance = 0;
+const touchSpread = (t) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
 canvas.addEventListener('touchstart', (e) => {
   e.preventDefault();
   lastWater = null;
+  if (e.touches.length >= 2) {
+    pinchDistance = touchSpread(e.touches);
+    pointer.down = false;
+    return;
+  }
   onPointerMove(e.touches[0]);
   pointer.down = true;
 }, { passive: false });
 canvas.addEventListener('touchmove', (e) => {
   e.preventDefault();
+  if (e.touches.length >= 2) {
+    const d = touchSpread(e.touches);
+    if (pinchDistance > 0) zoomBy(d / pinchDistance);
+    pinchDistance = d;
+    return;
+  }
   onPointerMove(e.touches[0]);
 }, { passive: false });
 canvas.addEventListener('touchend', (e) => {
+  if (e.touches.length < 2) pinchDistance = 0;
   if (e.touches.length === 0) {
     pointer.active = false;
     lastWater = null;
@@ -274,6 +307,18 @@ function handleMouseRipples(dt) {
   pointer.down = false;
 }
 
+// Whales gliding just under the surface push the water up.
+let whaleTimer = 0;
+function handleWhaleRipples(dt) {
+  whaleTimer -= dt;
+  if (whaleTimer > 0) return;
+  whaleTimer = 0.2;
+  for (const p of marine.surfacePoints()) {
+    const [u, v] = toUv(p);
+    world.sim.addDrop(u, v, 0.07, Math.min(0.03, p.strength));
+  }
+}
+
 let rainAccumulator = 0;
 function handleRainRipples(dt) {
   const c = env.current;
@@ -300,7 +345,9 @@ function updateCamera(dt, time) {
   const aspect = window.innerWidth / Math.max(1, window.innerHeight);
   // Pull back on narrow (portrait) screens so the cube still fits the width.
   const fit = aspect < 1.3 ? Math.pow(1.3 / aspect, 0.7) : 1;
-  const distance = (7.8 * fit) / Math.max(0.3, settings.cubescale / 100);
+  zoom.value += (zoom.target - zoom.value) * (1 - Math.exp(-dt * 6));
+  const MIN_DISTANCE = 3.6; // the cube's corners are ~1.75 from its center
+  const distance = Math.max(MIN_DISTANCE, (7.2 * fit) / (Math.max(0.3, settings.cubescale / 100) * zoom.value));
   const azimuth = pointer.smooth.x * 0.45 * strength + Math.sin(time * 0.05) * 0.06;
   const elevation = 0.38 - pointer.smooth.y * 0.14 * strength + Math.sin(time * 0.037) * 0.02;
   camera.position.set(
@@ -355,14 +402,16 @@ function frame(now) {
   updateCamera(dt, elapsed);
   handleMouseRipples(dt);
   handleRainRipples(dt);
+  handleWhaleRipples(dt);
 
   world.sim.update(dt);
   world.ocean.update();
   world.tank.update(env);
   world.sky.update(dt, camera, env);
   world.precipitation.update(dt, env);
-  world.lightning.update(dt, env, camera.aspect);
-  fish.update(dt, elapsed, env, threat);
+  world.lightning.update(dt, env, camera.aspect, world.sky.horizonNdc);
+  marine.update(dt, env);
+  fish.update(dt, elapsed, env, threat, marine.predators());
 
   renderer.render(scene, camera);
 }
@@ -372,7 +421,7 @@ function frame(now) {
 
 applyLanguage();
 buildWorld();
-buildFish();
+buildLife();
 resize();
 hud.setVisible(settings.showhud, settings.hudposition);
 applyWeather();
@@ -382,4 +431,4 @@ refreshWeather();
 requestAnimationFrame(frame);
 
 // Handy for testing in the browser console.
-window.oceanCube = { env, settings, renderer, get world() { return world; }, refreshWeather, applyWeather, onPropertiesChanged };
+window.oceanCube = { env, settings, renderer, zoom, get world() { return world; }, getMarine: () => marine, refreshWeather, applyWeather, onPropertiesChanged };

@@ -3,8 +3,8 @@ export const CUBE = {
   size: 2,          // width/depth of the water volume
   bottom: -1,       // bottom of the glass
   top: 1,           // top of the glass
-  sandTop: -0.78,   // top of the sand layer
-  waterLevel: 0.3,  // resting height of the water surface
+  sandTop: -0.9,    // top of the sand layer (deep down, mostly lost in the blue)
+  waterLevel: 0.55, // resting height of the water surface
 };
 
 export const QUALITY = {
@@ -25,7 +25,9 @@ export const DEFAULTS = {
   timeoverride: 'auto',
   showhud: true,
   hudposition: 'topleft',
-  fishcount: 14,
+  fishcount: 16,
+  whalecount: 1,
+  sharkcount: 2,
   mouseripples: true,
   parallax: 60,
   cubescale: 100,
