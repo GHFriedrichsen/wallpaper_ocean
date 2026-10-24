@@ -6,8 +6,13 @@ import { DEFAULTS } from './config.js';
  * (e.g. index.html?weather=storm&time=night&quality=ultra).
  */
 export function createProperties(onChange) {
-  const values = { ...DEFAULTS };
+  // A host page (e.g. the web demo) can set window.OCEAN_CUBE_DEFAULTS before app.js.
+  const values = { ...DEFAULTS, ...(window.OCEAN_CUBE_DEFAULTS || {}) };
   const general = { fps: 0, weLanguage: null, paused: false };
+  // Phones and tablets start at medium quality; Wallpaper Engine overrides it anyway.
+  if (!window.OCEAN_CUBE_DEFAULTS?.quality && window.matchMedia?.('(pointer: coarse)').matches) {
+    values.quality = 'medium';
+  }
 
   // URL aliases make browser testing quicker.
   const aliases = { lang: 'uilanguage', weather: 'weatheroverride', time: 'timeoverride', fps: 'fpslimit', hud: 'showhud', fish: 'fishcount' };

@@ -7,7 +7,8 @@
   "scripts": {
     "build": "node build.mjs",
     "dev": "node build.mjs --serve",
-    "preview": "node scripts/preview.mjs"
+    "preview": "node scripts/preview.mjs",
+    "demo": "node build.mjs && node scripts/build-demo.mjs"
   },
   "devDependencies": {
     "esbuild": "0.24.0",

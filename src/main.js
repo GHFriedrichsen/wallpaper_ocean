@@ -140,7 +140,7 @@ async function refreshWeather() {
   const token = ++fetchToken;
   const city = settings.city.trim();
   if (!city) {
-    hud.update({ message: 'noCity' });
+    hud.update({ message: settings.weatheroverride === 'auto' ? 'noCity' : null });
     return;
   }
   if (!report) hud.update({ message: 'loading' });
@@ -215,6 +215,25 @@ window.addEventListener('mousemove', onPointerMove);
 window.addEventListener('mousedown', (e) => { onPointerMove(e); pointer.down = true; });
 document.addEventListener('mouseleave', () => { pointer.active = false; lastWater = null; });
 
+// Touch (phones/tablets): tap splashes, dragging draws ripples and steers the camera.
+// Only touches on the scene itself count, so on-page controls keep working.
+canvas.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  lastWater = null;
+  onPointerMove(e.touches[0]);
+  pointer.down = true;
+}, { passive: false });
+canvas.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+  onPointerMove(e.touches[0]);
+}, { passive: false });
+canvas.addEventListener('touchend', (e) => {
+  if (e.touches.length === 0) {
+    pointer.active = false;
+    lastWater = null;
+  }
+});
+
 function waterPoint() {
   raycaster.setFromCamera(pointer.ndc, camera);
   if (!raycaster.ray.intersectPlane(waterPlane, hit)) return null;
@@ -279,7 +298,8 @@ function updateCamera(dt, time) {
   const strength = settings.parallax / 100;
 
   const aspect = window.innerWidth / Math.max(1, window.innerHeight);
-  const fit = aspect < 1.3 ? 1.3 / aspect : 1;
+  // Pull back on narrow (portrait) screens so the cube still fits the width.
+  const fit = aspect < 1.3 ? Math.pow(1.3 / aspect, 0.7) : 1;
   const distance = (7.8 * fit) / Math.max(0.3, settings.cubescale / 100);
   const azimuth = pointer.smooth.x * 0.45 * strength + Math.sin(time * 0.05) * 0.06;
   const elevation = 0.38 - pointer.smooth.y * 0.14 * strength + Math.sin(time * 0.037) * 0.02;

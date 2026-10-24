@@ -105,7 +105,8 @@ export class Lightning {
     // Strike away from the cube in the middle of the screen, ending at the horizon.
     const aspect = this.material.uniforms.uAspect.value;
     const side = Math.random() < 0.5 ? -1 : 1;
-    const x = side * (0.62 + Math.random() * Math.max(0.1, aspect - 0.75));
+    const minX = Math.min(0.62, aspect * 0.5);
+    const x = side * (minX + Math.random() * Math.max(0.05, aspect - minX - 0.08));
     const start = new THREE.Vector3(x, 1.05, 0);
     const end = new THREE.Vector3(x + (Math.random() - 0.5) * 0.5, -0.72 - Math.random() * 0.06, 0);
     this.bolt = new THREE.Mesh(boltGeometry(start, end), this.material);

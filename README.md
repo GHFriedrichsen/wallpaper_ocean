@@ -79,6 +79,8 @@ npm run build    # gera wallpaper/app.js (minificado)
 No navegador, as propriedades podem ser passadas pela URL, por exemplo:
 `http://localhost:8080/?weather=storm&time=night&quality=ultra&lang=pt&city=Recife`
 
+`npm run demo` gera `web/dist/ocean-cube.html`, uma página única (sem dependências) para ver no celular ou em qualquer navegador. Ela tem botões para trocar o clima e a hora, e aceita toque na água. Essa versão não busca o clima ao vivo; usa o relógio do aparelho para dia e noite.
+
 `npm run preview -- <pasta> "nome:parametros"` renderiza capturas de tela em um Chromium headless, com a API de clima simulada. É útil para conferir mudanças visuais sem abrir o Wallpaper Engine.
 
 ### Estrutura

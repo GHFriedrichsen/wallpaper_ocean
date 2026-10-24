@@ -53,6 +53,14 @@
     }
     .status.topleft, .status.topright { top: 12px; }
     .status.bottomleft, .status.bottomright { bottom: 40px; }
+    @media (max-width: 600px) {
+      .hud { min-width: 0; padding: 10px 14px; }
+      .topleft { top: calc(16px + env(safe-area-inset-top, 0px)); left: calc(16px + env(safe-area-inset-left, 0px)); }
+      .topright { top: calc(16px + env(safe-area-inset-top, 0px)); right: calc(16px + env(safe-area-inset-right, 0px)); }
+      .bottomleft { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); left: calc(16px + env(safe-area-inset-left, 0px)); }
+      .bottomright { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); right: calc(16px + env(safe-area-inset-right, 0px)); }
+      .hud-temp { font-size: 28px; }
+    }
     [hidden] { display: none !important; }
   </style>
 </head>
