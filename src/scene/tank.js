@@ -53,11 +53,12 @@ void main() {
   float sunUp = max(uSunDir.y, 0.0);
   vec3 light = uAmbient * 0.9 + uSunColor * (0.15 + max(dot(N, uSunDir), 0.0) * 0.6);
   vec3 col = sand * light;
-  col = mix(col, waterTint * light * 1.4, 0.35 * step(0.5, N.y));
+  // The floor is far down: almost lost in the deep blue.
+  col = mix(col, uDeepColor * light * 0.45, 0.9 * step(0.5, N.y));
 
   float c = caustic(vWorld.xz * 0.55 + uWindDir * uTime * 0.02, uTime * (0.35 + uWind * 0.4));
   float causticStrength = sunUp * (1.0 - uCloud * 0.85) * step(0.5, N.y);
-  col += uSunColor * c * causticStrength * 0.55;
+  col += uShallowColor * uSunColor * c * causticStrength * 0.35;
   col += vec3(0.1, 0.8, 1.0) * c * uNight * 0.05 * step(0.5, N.y);
   col += vec3(0.8, 0.85, 1.0) * uFlash * 0.2;
   col = mix(col, uFogColor, uFog * 0.3);
@@ -77,7 +78,7 @@ void main() {
   base = mix(base, vec3(0.2, 0.42, 0.25), smoothstep(0.3, 0.9, N.y) * 0.5); // moss on top
   vec3 light = uAmbient * 0.6 + uSunColor * max(dot(N, uSunDir), 0.0) * 0.7;
   vec3 col = base * light;
-  col = mix(col, uShallowColor * light, 0.35);
+  col = mix(col, uDeepColor * light, 0.65);
   col = mix(col, uFogColor, uFog * 0.3);
   gl_FragColor = vec4(col, 1.0);
 }
@@ -110,7 +111,7 @@ void main() {
   vec3 base = mix(vec3(0.1, 0.38, 0.16), vec3(0.45, 0.8, 0.3), vH);
   vec3 light = uAmbient * 0.8 + uSunColor * 0.6 * max(uSunDir.y, 0.0);
   vec3 col = base * light + vec3(0.05, 0.6, 0.5) * uNight * vH * 0.25;
-  col = mix(col, uShallowColor * light, 0.3);
+  col = mix(col, uDeepColor * light, 0.55);
   col = mix(col, uFogColor, uFog * 0.3);
   gl_FragColor = vec4(col, 1.0);
 }

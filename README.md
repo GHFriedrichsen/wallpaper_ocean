@@ -1,6 +1,6 @@
 # Ocean Cube — wallpaper animado com clima real
 
-Um oceano dentro de um cubo de vidro, no centro da tela, que reage ao **clima real da sua cidade**: sol, nuvens, chuva, garoa, tempestade com raios, vento, neblina, neve, dia e noite (com o nascer e o pôr do sol de verdade).
+Um oceano profundo dentro de um cubo de vidro, flutuando sobre o mar aberto, que reage ao **clima real da sua cidade**: sol, nuvens, chuva, garoa, tempestade com raios, vento, neblina, neve, dia e noite (com o nascer e o pôr do sol de verdade).
 Feito para o **Wallpaper Engine** (wallpaper do tipo *Web*), com Three.js/WebGL.
 
 ![preview](wallpaper/preview.jpg)
@@ -11,7 +11,10 @@ Feito para o **Wallpaper Engine** (wallpaper do tipo *Web*), com Three.js/WebGL.
 - **Ondas guiadas pelo vento real**: a altura, a direção e a espuma seguem a velocidade e a direção do vento na sua cidade.
 - **Dia e noite reais**: o sol e a lua cruzam o céu conforme os horários de nascer e pôr do sol da sua localização.
 - **Interação com o mouse**: a câmera acompanha o mouse (paralaxe). Passar o mouse sobre a água cria ondulações que batem e voltam nas paredes do cubo, e clicar faz um "splash". À noite, a água agitada brilha (bioluminescência).
-- **Peixes** que nadam em cardume, fogem do mouse, descem para o fundo em tempestades e brilham de leve à noite.
+- **Imensidão azul**: o cubo flutua sobre um mar aberto que vai até o horizonte. Dentro dele, a água vai do azul forte da superfície até um abismo escuro, com raios de luz descendo.
+- **Baleia jubarte e tubarões** cruzando o cubo devagar. A baleia às vezes sobe e mexe a superfície.
+- **Peixes** que nadam em cardume, fogem do mouse e dos tubarões, descem para o fundo em tempestades e brilham de leve à noite.
+- **Zoom** com a roda do mouse (ou pinça no celular). A câmera nunca entra na água.
 - **Chuva, neve e raios na tela inteira**. A chuva também cria ondulações na superfície e escorre pelo vidro.
 - **Painel do clima** opcional (cidade, hora, temperatura, vento, umidade).
 - **Idiomas**: inglês, português e espanhol (automático ou manual).
@@ -48,9 +51,11 @@ Depois disso, escolha a sua **cidade** nas propriedades do wallpaper, no painel 
 | Hora do dia (modo de teste) | Força amanhecer, dia, entardecer ou noite |
 | Mostrar painel do clima / Posição | Liga e desliga o painel e escolhe o canto |
 | Peixes | Quantidade de peixes (0–40) |
+| Baleias | 0 a 2 baleias jubarte |
+| Tubarões | 0 a 4 tubarões |
 | Mouse cria ondulações | Liga e desliga a interação com a água |
 | Paralaxe do mouse | Quanto a câmera acompanha o mouse |
-| Tamanho do cubo | Zoom do cubo na tela |
+| Zoom | Zoom inicial da câmera. A roda do mouse ajusta por cima disso, se o Wallpaper Engine repassar a rolagem |
 | Atualização do clima | Intervalo, em minutos, entre as consultas à API |
 
 ## Como o clima vira oceano
@@ -97,7 +102,8 @@ src/
   scene/rippleSim.js   simulação de ondulações na GPU (mouse e chuva)
   scene/tank.js        vidro, areia com cáusticas, pedras e algas
   scene/fish.js        peixes (instanciados) com comportamento de cardume
-  scene/sky.js         céu, sol, lua, estrelas e nuvens
+  scene/marine.js      baleias e tubarões (geometria procedural e nado animado)
+  scene/sky.js         céu, sol, lua, estrelas, nuvens e o mar aberto até o horizonte
   scene/precipitation.js chuva e neve
   scene/lightning.js   raios
 wallpaper/             pasta que vai para o Wallpaper Engine (index.html, app.js, project.json, preview.jpg)

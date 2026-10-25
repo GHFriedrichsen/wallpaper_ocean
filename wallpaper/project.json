@@ -1,6 +1,6 @@
 {
   "title": "Ocean Cube — Live Weather",
-  "description": "An ocean inside a glass cube that reacts to the real weather of your city: sun, clouds, rain, wind, storms, fog, snow, day and night. Move the mouse over the water to make ripples.",
+  "description": "An ocean inside a glass cube floating over the open sea, reacting to the real weather of your city: sun, clouds, rain, wind, storms, fog, snow, day and night. Fish, sharks and a humpback whale swim inside. Move the mouse over the water to make ripples, scroll to zoom.",
   "type": "web",
   "file": "index.html",
   "preview": "preview.jpg",
@@ -51,8 +51,10 @@
         "ui_fishcount": "Fish",
         "ui_mouseripples": "Mouse makes ripples",
         "ui_parallax": "Mouse parallax",
-        "ui_cubescale": "Cube size (%)",
-        "ui_refreshminutes": "Weather update (minutes)"
+        "ui_cubescale": "Zoom (%) — mouse wheel also zooms",
+        "ui_refreshminutes": "Weather update (minutes)",
+        "ui_whalecount": "Whales",
+        "ui_sharkcount": "Sharks"
       },
       "pt-br": {
         "ui_language": "Idioma",
@@ -94,8 +96,10 @@
         "ui_fishcount": "Peixes",
         "ui_mouseripples": "Mouse cria ondulações",
         "ui_parallax": "Paralaxe do mouse",
-        "ui_cubescale": "Tamanho do cubo (%)",
-        "ui_refreshminutes": "Atualização do clima (minutos)"
+        "ui_cubescale": "Zoom (%) — a roda do mouse também dá zoom",
+        "ui_refreshminutes": "Atualização do clima (minutos)",
+        "ui_whalecount": "Baleias",
+        "ui_sharkcount": "Tubarões"
       },
       "es-es": {
         "ui_language": "Idioma",
@@ -137,8 +141,10 @@
         "ui_fishcount": "Peces",
         "ui_mouseripples": "El ratón crea ondas",
         "ui_parallax": "Paralaje del ratón",
-        "ui_cubescale": "Tamaño del cubo (%)",
-        "ui_refreshminutes": "Actualización del clima (minutos)"
+        "ui_cubescale": "Zoom (%) — la rueda del ratón también hace zoom",
+        "ui_refreshminutes": "Actualización del clima (minutos)",
+        "ui_whalecount": "Ballenas",
+        "ui_sharkcount": "Tiburones"
       }
     },
     "properties": {
@@ -337,20 +343,40 @@
         "order": 9,
         "text": "ui_fishcount",
         "type": "slider",
-        "value": 14,
+        "value": 16,
         "min": 0,
         "max": 40,
         "step": 1,
         "fraction": false
       },
-      "mouseripples": {
+      "whalecount": {
         "order": 10,
+        "text": "ui_whalecount",
+        "type": "slider",
+        "value": 1,
+        "min": 0,
+        "max": 2,
+        "step": 1,
+        "fraction": false
+      },
+      "sharkcount": {
+        "order": 11,
+        "text": "ui_sharkcount",
+        "type": "slider",
+        "value": 2,
+        "min": 0,
+        "max": 4,
+        "step": 1,
+        "fraction": false
+      },
+      "mouseripples": {
+        "order": 12,
         "text": "ui_mouseripples",
         "type": "bool",
         "value": true
       },
       "parallax": {
-        "order": 11,
+        "order": 13,
         "text": "ui_parallax",
         "type": "slider",
         "value": 60,
@@ -360,17 +386,17 @@
         "fraction": false
       },
       "cubescale": {
-        "order": 12,
+        "order": 14,
         "text": "ui_cubescale",
         "type": "slider",
         "value": 100,
         "min": 50,
-        "max": 150,
+        "max": 200,
         "step": 1,
         "fraction": false
       },
       "refreshminutes": {
-        "order": 13,
+        "order": 15,
         "text": "ui_refreshminutes",
         "type": "slider",
         "value": 15,

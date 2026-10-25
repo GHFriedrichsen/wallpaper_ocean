@@ -108,7 +108,8 @@ export class Lightning {
     const minX = Math.min(0.62, aspect * 0.5);
     const x = side * (minX + Math.random() * Math.max(0.05, aspect - minX - 0.08));
     const start = new THREE.Vector3(x, 1.05, 0);
-    const end = new THREE.Vector3(x + (Math.random() - 0.5) * 0.5, -0.72 - Math.random() * 0.06, 0);
+    const horizon = this.horizon ?? -0.75;
+    const end = new THREE.Vector3(x + (Math.random() - 0.5) * 0.5, horizon + 0.02 + Math.random() * 0.03, 0);
     this.bolt = new THREE.Mesh(boltGeometry(start, end), this.material);
     this.bolt.frustumCulled = false;
     this.bolt.renderOrder = -5;
@@ -120,8 +121,9 @@ export class Lightning {
     env.flash = 1;
   }
 
-  update(dt, env, aspect) {
+  update(dt, env, aspect, horizon = -0.75) {
     this.material.uniforms.uAspect.value = aspect;
+    this.horizon = horizon;
     const storm = env.current.storm;
     if (storm > 0.3) {
       this.timer -= dt;
